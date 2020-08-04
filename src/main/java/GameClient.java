@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameClient extends JComponent {
 
@@ -8,6 +11,11 @@ public class GameClient extends JComponent {
     private int screenHeight;
     //玩家坦克
     private Tank playerTank;
+    //敵方坦克
+    private List<Tank>enemyTanks = new ArrayList<>(12);
+    //牆壁
+    private List<Wall> walls = new ArrayList<>();
+
     private boolean stop;
 
     GameClient(){
@@ -34,13 +42,32 @@ public class GameClient extends JComponent {
     }
 
     public void init(){
-        playerTank = new Tank(getCenterPosX(47),getCenterPosY(47),Direction.DOWN);
+
+        playerTank = new Tank(getCenterPosX(47),getCenterPosY(100),Direction.DOWN);
+        for (int i=0; i<3; i++){
+            for (int j=0; j<4; j++){
+                enemyTanks.add(new Tank(350+j*80,500+i*80,Direction.UP,true));
+            }
+        }
+
+        walls.add(new Wall(250,150,true,15));
+        walls.add(new Wall(150,200,false,15));
+        walls.add(new Wall(800,200,false,15));
     }
+
+
 
     @Override
     protected void paintComponent(Graphics g) {
         //super.paintComponent(g);
         playerTank.draw(g);
+        for (Tank tank:enemyTanks){
+            tank.draw(g);
+        }
+
+        for (Wall wall : walls){
+            wall.draw(g);
+        }
         g.drawImage(playerTank.getImage(),
                 playerTank.getX(),playerTank.getY(),null);
     }
