@@ -1,12 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Tank {
+public class Tank extends GameObject{
     private int x;
     private int y;
     private int speed;
     private boolean enemy;
 
+    //上下左右四個方向
     private boolean[] dirs = new boolean[4];
 
     public boolean[] getDirs() {
@@ -15,41 +16,17 @@ public class Tank {
 
     private Direction direction;
 
-    public Tank(int x, int y, Direction direction) {
-        this(x,y,direction,false);
+    public Tank(int x, int y, Direction direction,Image[] image) {
+        this(x,y,direction,false,image);
     }
 
-    public Tank(int x, int y, Direction direction,boolean enemy) {
+    public Tank(int x, int y, Direction direction,boolean enemy,Image[] image) {
+        super(x,y,image);
         this.x = x;
         this.y = y;
         this.direction = direction;
         this.enemy = enemy;
         speed = 5;
-    }
-
-    public Image getImage(){
-
-        String name = enemy ? "etank":"itank";
-
-        if (direction == Direction.UP)
-            return new ImageIcon("assets/images/"+name+"U.png").getImage();
-        if (direction == Direction.DOWN)
-            return new ImageIcon("assets/images/"+name+"D.png").getImage();
-        if (direction == Direction.LEFT)
-            return new ImageIcon("assets/images/"+name+"L.png").getImage();
-        if (direction == Direction.RIGHT)
-            return new ImageIcon("assets/images/"+name+"R.png").getImage();
-        if (direction == Direction.UP_LEFT)
-            return new ImageIcon("assets/images/"+name+"LU.png").getImage();
-        if (direction == Direction.UP_RIGHT)
-            return new ImageIcon("assets/images/"+name+"RU.png").getImage();
-        if (direction == Direction.DOWN_LEFT)
-            return new ImageIcon("assets/images/"+name+"LD.png").getImage();
-        if (direction == Direction.DOWN_RIGHT)
-            return new ImageIcon("assets/images/"+name+"RD.png").getImage();
-
-        return null;
-
     }
 
     private void determineDirection(){
@@ -62,7 +39,6 @@ public class Tank {
         else if (!dirs[0] && dirs[1] && !dirs[2] && dirs[3])direction = Direction.DOWN_RIGHT;
         else if (!dirs[0] && !dirs[1] && dirs[2] && !dirs[3])direction = Direction.LEFT;
         else if (!dirs[0] && !dirs[1] && !dirs[2] && dirs[3])direction = Direction.RIGHT;
-
     }
 
     public void move(){
@@ -130,13 +106,12 @@ public class Tank {
         this.speed = speed;
     }
 
-
     public void draw(Graphics g) {
         if (!isStop()) {
             determineDirection();
             move();
         }
-        g.drawImage(getImage(), x, y, null);
+        g.drawImage(image[direction.ordinal()], x, y, null);
     }
 
     private boolean isStop(){

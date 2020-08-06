@@ -3,18 +3,17 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GameClient extends JComponent {
 
     private int screenWidth;
     private int screenHeight;
-    //玩家坦克
+
     private Tank playerTank;
-    //敵方坦克
-    private List<Tank>enemyTanks = new ArrayList<>(12);
-    //牆壁
-    private List<Wall> walls = new ArrayList<>();
+
+    private List<GameObject> objects = new ArrayList<>();
 
     private boolean stop;
 
@@ -43,33 +42,39 @@ public class GameClient extends JComponent {
 
     public void init(){
 
-        playerTank = new Tank(getCenterPosX(47),getCenterPosY(100),Direction.DOWN);
+        Image[] brickImage = {Tools.getImage("brick.png")};
+        Image[] iTankImage = new Image[8];
+        Image[] eTankImage = new Image[8];
+
+        String[] sub = {"U.png","D.png","L.png","R.png","LU.png","RU.png","LD.png","RD.png",};
+
+        for (int i=0; i<iTankImage.length; i++){
+            iTankImage[i] = Tools.getImage("itank"+sub[i]);
+            eTankImage[i] = Tools.getImage("etank"+sub[i]);
+        }
+
+        playerTank = new Tank(getCenterPosX(47),100,Direction.DOWN,iTankImage);
+        objects.add(playerTank);
+
         for (int i=0; i<3; i++){
             for (int j=0; j<4; j++){
-                enemyTanks.add(new Tank(350+j*80,500+i*80,Direction.UP,true));
+                objects.add(new Tank(350+j*80,500+i*80,Direction.UP,true,eTankImage));
             }
         }
 
-        walls.add(new Wall(250,150,true,15));
-        walls.add(new Wall(150,200,false,15));
-        walls.add(new Wall(800,200,false,15));
+        //Image image = Tools.getImage("brick.png");
+        objects.add(new Wall(250,150,true,15,brickImage));
+        objects.add(new Wall(150,200,false,15,brickImage));
+        objects.add(new Wall(800,200,false,15,brickImage));
     }
 
 
 
     @Override
     protected void paintComponent(Graphics g) {
-        //super.paintComponent(g);
-        playerTank.draw(g);
-        for (Tank tank:enemyTanks){
-            tank.draw(g);
+        for (GameObject object:objects){
+            object.draw(g);
         }
-
-        for (Wall wall : walls){
-            wall.draw(g);
-        }
-        g.drawImage(playerTank.getImage(),
-                playerTank.getX(),playerTank.getY(),null);
     }
 
     private int getCenterPosX(int width){
