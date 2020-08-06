@@ -22,4 +22,9 @@ public class Wall extends GameObject {
             }
         }
     }
+
+    @Override
+    public Rectangle getRectangle() {
+        return horizontal ? new Rectangle(x,y,bricks*width,height):new Rectangle(x,y,width,bricks*height);
+    }
 }

@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class GameObject {
+    protected int oldX;
+    protected int oldY;
+
     protected int x;
     protected int y;
     protected int width;
@@ -15,6 +18,11 @@ public abstract class GameObject {
         this.image=image;
         width =image[0].getWidth(null);
         height = image[0].getHeight(null);
+    }
+
+    //取得物件寬度
+    public Rectangle getRectangle(){
+        return new Rectangle(x,y,width,height);
     }
 
     abstract void draw(Graphics g);

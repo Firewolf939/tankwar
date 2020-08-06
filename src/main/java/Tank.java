@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Tank extends GameObject{
-    private int x;
-    private int y;
     private int speed;
     private boolean enemy;
 
@@ -26,7 +24,7 @@ public class Tank extends GameObject{
         this.y = y;
         this.direction = direction;
         this.enemy = enemy;
-        speed = 5;
+        speed = 25;
     }
 
     private void determineDirection(){
@@ -42,6 +40,8 @@ public class Tank extends GameObject{
     }
 
     public void move(){
+        oldX=x;
+        oldY=y;
         switch (direction){
             case UP:
                 y-=speed;
@@ -71,6 +71,32 @@ public class Tank extends GameObject{
                 y+=speed;
                 x+=speed;
                 break;
+        }
+    }
+
+    public void collision(){
+        //邊界偵測
+        if(x<0){
+            x=0;
+        }else if(x>TankWar.gameClient.getWidth()-width){
+            x=TankWar.gameClient.getWidth()-width;
+        }
+
+        if(y<0){
+            y=0;
+        }else if(y>TankWar.gameClient.getHeight()-height){
+            y=TankWar.gameClient.getHeight()-height;
+        }
+
+        //牆面碰撞
+        for (GameObject object:TankWar.gameClient.getGameObjects()){
+            if (object!=this){
+                if (object.getRectangle().intersects(this.getRectangle())){
+                    x=oldX;
+                    y=oldY;
+                    return;
+                }
+            }
         }
     }
 
@@ -110,6 +136,7 @@ public class Tank extends GameObject{
         if (!isStop()) {
             determineDirection();
             move();
+            collision();
         }
         g.drawImage(image[direction.ordinal()], x, y, null);
     }

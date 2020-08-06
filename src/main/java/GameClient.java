@@ -13,7 +13,11 @@ public class GameClient extends JComponent {
 
     private Tank playerTank;
 
-    private List<GameObject> objects = new ArrayList<>();
+    private List<GameObject> gameObjects = new ArrayList<>();
+
+    public List<GameObject> getGameObjects(){
+        return gameObjects;
+    }
 
     private boolean stop;
 
@@ -54,25 +58,25 @@ public class GameClient extends JComponent {
         }
 
         playerTank = new Tank(getCenterPosX(47),100,Direction.DOWN,iTankImage);
-        objects.add(playerTank);
+        gameObjects.add(playerTank);
 
         for (int i=0; i<3; i++){
             for (int j=0; j<4; j++){
-                objects.add(new Tank(350+j*80,500+i*80,Direction.UP,true,eTankImage));
+                gameObjects.add(new Tank(350+j*80,500+i*80,Direction.UP,true,eTankImage));
             }
         }
 
         //Image image = Tools.getImage("brick.png");
-        objects.add(new Wall(250,150,true,15,brickImage));
-        objects.add(new Wall(150,200,false,15,brickImage));
-        objects.add(new Wall(800,200,false,15,brickImage));
+        gameObjects.add(new Wall(250,150,true,15,brickImage));
+        gameObjects.add(new Wall(150,200,false,15,brickImage));
+        gameObjects.add(new Wall(800,200,false,15,brickImage));
     }
 
 
 
     @Override
     protected void paintComponent(Graphics g) {
-        for (GameObject object:objects){
+        for (GameObject object:gameObjects){
             object.draw(g);
         }
     }
