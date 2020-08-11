@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class GameClient extends JComponent {
@@ -18,6 +19,9 @@ public class GameClient extends JComponent {
     public List<GameObject> getGameObjects(){
         return gameObjects;
     }
+
+    //子彈圖片
+    public static Image[] bulletImg = new Image[8];
 
     private boolean stop;
 
@@ -44,6 +48,10 @@ public class GameClient extends JComponent {
         }).start();
     }
 
+    public void addGameObject(GameObject object){
+        gameObjects.add(object);
+    }
+
     public void init(){
 
         Image[] brickImage = {Tools.getImage("brick.png")};
@@ -55,6 +63,7 @@ public class GameClient extends JComponent {
         for (int i=0; i<iTankImage.length; i++){
             iTankImage[i] = Tools.getImage("itank"+sub[i]);
             eTankImage[i] = Tools.getImage("etank"+sub[i]);
+            bulletImg[i] = Tools.getImage("missile"+sub[i]);
         }
 
         playerTank = new Tank(getCenterPosX(47),100,Direction.DOWN,iTankImage);
@@ -66,18 +75,26 @@ public class GameClient extends JComponent {
             }
         }
 
-        //Image image = Tools.getImage("brick.png");
         gameObjects.add(new Wall(250,150,true,15,brickImage));
         gameObjects.add(new Wall(150,200,false,15,brickImage));
         gameObjects.add(new Wall(800,200,false,15,brickImage));
     }
 
-
-
     @Override
     protected void paintComponent(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0,0,getWidth(),getHeight());
+
         for (GameObject object:gameObjects){
             object.draw(g);
+        }
+
+        Iterator<GameObject> iterator = gameObjects.iterator();
+
+        while (iterator.hasNext()){
+            if (!iterator.next().alive){
+                iterator.remove();
+            }
         }
     }
 
@@ -113,6 +130,9 @@ public class GameClient extends JComponent {
                 dirs[3]=true;
                 //playerTank.setDirection(Direction.RIGHT);
                 //playerTank.setX(playerTank.getX()+playerTank.getSpeed());
+                break;
+            case KeyEvent.VK_CONTROL:
+                playerTank.fire();
                 break;
             default:
         }

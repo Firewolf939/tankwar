@@ -2,8 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Tank extends GameObject{
-    private int speed;
-    private boolean enemy;
+    protected int speed;
+    protected boolean enemy;
 
     //上下左右四個方向
     private boolean[] dirs = new boolean[4];
@@ -12,7 +12,7 @@ public class Tank extends GameObject{
         return dirs;
     }
 
-    private Direction direction;
+    protected Direction direction;
 
     public Tank(int x, int y, Direction direction,Image[] image) {
         this(x,y,direction,false,image);
@@ -24,7 +24,7 @@ public class Tank extends GameObject{
         this.y = y;
         this.direction = direction;
         this.enemy = enemy;
-        speed = 25;
+        speed = 5;
     }
 
     private void determineDirection(){
@@ -98,6 +98,32 @@ public class Tank extends GameObject{
                 }
             }
         }
+    }
+
+    public void fire(){
+        Bullet bullet = new Bullet(x,y,direction,false,TankWar.gameClient.bulletImg);
+        TankWar.gameClient.addGameObject(bullet);
+    }
+
+    public boolean collisionBound(){
+        boolean collision = false;
+        //邊界偵測
+        if(x<0){
+            x=0;
+            collision = true;
+        }else if(x>TankWar.gameClient.getWidth()-width){
+            x=TankWar.gameClient.getWidth()-width;
+            collision = true;
+        }
+
+        if(y<0){
+            y=0;
+            collision = true;
+        }else if(y>TankWar.gameClient.getHeight()-height){
+            y=TankWar.gameClient.getHeight()-height;
+            collision = true;
+        }
+        return collision;
     }
 
     public int getX() {
