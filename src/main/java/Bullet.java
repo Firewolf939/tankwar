@@ -1,20 +1,10 @@
 import java.awt.*;
 
-public class Bullet extends Tank{
+public class Bullet extends MoveObject{
 
     public Bullet(int x, int y, Direction direction, boolean enemy, Image[] image) {
         super(x, y, direction, enemy, image);
-        speed=10;
-    }
-
-    @Override
-    public void draw(Graphics g){
-        if (!alive){
-            return;
-        }
-        move();
-        collision();
-        g.drawImage(image[direction.ordinal()], x, y, null);
+        speed=20;
     }
 
     @Override
