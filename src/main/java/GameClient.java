@@ -6,15 +6,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameClient extends JComponent {
 
     private int screenWidth;
     private int screenHeight;
 
-    private Tank playerTank;
+    private PlayerTank playerTank;
+    private boolean gameOver;
 
-    private List<GameObject> gameObjects = new ArrayList<>();
+    private CopyOnWriteArrayList<GameObject> gameObjects = new CopyOnWriteArrayList<>();
 
     public List<GameObject> getGameObjects(){
         return gameObjects;
@@ -22,6 +24,7 @@ public class GameClient extends JComponent {
 
     //子彈圖片
     public static Image[] bulletImg = new Image[8];
+    public static Image[] explosionImg = new Image[11];
 
     private boolean stop;
 
@@ -54,6 +57,8 @@ public class GameClient extends JComponent {
 
     public void init(){
 
+//        gameOver=false;
+//        gameObjects.clear();
         Image[] brickImage = {Tools.getImage("brick.png")};
         Image[] iTankImage = new Image[8];
         Image[] eTankImage = new Image[8];
@@ -66,12 +71,16 @@ public class GameClient extends JComponent {
             bulletImg[i] = Tools.getImage("missile"+sub[i]);
         }
 
-        playerTank = new Tank(getCenterPosX(47),100,Direction.DOWN,iTankImage);
+        for (int i=0;i<explosionImg.length;i++){
+            explosionImg[i]= Tools.getImage(i+".png");
+        }
+
+        playerTank = new PlayerTank(getCenterPosX(47),100,Direction.DOWN,iTankImage);
         gameObjects.add(playerTank);
 
         for (int i=0; i<3; i++){
             for (int j=0; j<4; j++){
-                gameObjects.add(new Tank(350+j*80,500+i*80,Direction.UP,true,eTankImage));
+                gameObjects.add(new EnemyTank(350+j*80,500+i*80,Direction.UP,true,eTankImage));
             }
         }
 
@@ -89,13 +98,18 @@ public class GameClient extends JComponent {
             object.draw(g);
         }
 
-        Iterator<GameObject> iterator = gameObjects.iterator();
-
-        while (iterator.hasNext()){
-            if (!iterator.next().alive){
-                iterator.remove();
-            }
+        for (GameObject object:gameObjects){
+            if (!object.alive)
+            gameObjects.remove(object);
         }
+
+//        Iterator<GameObject> iterator = gameObjects.iterator();
+//
+//        while (iterator.hasNext()){
+//            if (!iterator.next().alive){
+//                iterator.remove();
+//            }
+//        }
     }
 
     private int getCenterPosX(int width){
@@ -134,6 +148,16 @@ public class GameClient extends JComponent {
             case KeyEvent.VK_CONTROL:
                 playerTank.fire();
                 break;
+            case KeyEvent.VK_A:
+                playerTank.superFire();
+                break;
+//            case KeyEvent.VK_F2:
+//                for (GameObject object:objects){
+//                    if (object instanceof EnemyTank){
+//                        objects.remove(object);
+//                    }
+//                }
+//                break;
             default:
         }
         //repaint();
@@ -159,4 +183,21 @@ public class GameClient extends JComponent {
             default:
         }
     }
+
+//    public void checkGameStatus(){
+//        boolean gameWin=true;
+//
+//        for (GameObject object:objects){
+//            if (object instanceof EnemyTank){
+//                gameWin=false;
+//            }
+//        }
+//        if (gameWin){
+//            for (int i=0;i<3;i++){
+//                for (int j=0;j<4;j++){
+//                    addGameObject(new EnemyTank(320+j*100,450+100*i,Direction.UP,eTankImage));
+//                }
+//            }
+//        }
+//    }
 }

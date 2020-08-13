@@ -1,9 +1,8 @@
-import javax.swing.*;
 import java.awt.*;
 
 public class Tank extends MoveObject{
     //上下左右四個方向
-    private boolean[] dirs = new boolean[4];
+    protected boolean[] dirs = new boolean[4];
 
     public boolean[] getDirs() {
         return dirs;
@@ -34,21 +33,28 @@ public class Tank extends MoveObject{
         else if (!dirs[0] && !dirs[1] && !dirs[2] && dirs[3])direction = Direction.RIGHT;
     }
 
-    public void collision(){
+    public boolean collision(){
+
+        if (collisionBound())
+            return true;
+
         //牆面碰撞
         for (GameObject object:TankWar.gameClient.getGameObjects()){
             if (object!=this){
                 if (object.getRectangle().intersects(this.getRectangle())){
                     x=oldX;
                     y=oldY;
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     public void fire(){
-        Bullet bullet = new Bullet(x,y,direction,false,TankWar.gameClient.bulletImg);
+        Bullet bullet = new Bullet(x+width/2-GameClient.bulletImg[0].getWidth(null)/2,
+                y+height/2-GameClient.bulletImg[0].getHeight(null)/2,
+                direction,enemy,GameClient.bulletImg);
         TankWar.gameClient.addGameObject(bullet);
     }
 
